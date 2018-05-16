@@ -117,25 +117,25 @@ const benchmarks = {
   },
 };
 
-const createSuite = (count) => {
+const createSuite = (benchmarks, count) => {
   const suite = new Benchmark.Suite();
-  for (let t in benchmarks) suite.add(t, benchmarks[t]({ count }));
+  for (let t in benchmarks) suite.add(t, benchmarks[t](count));
   return suite;
 };
 
-const createSuites = () => {
+const createSuites = (benchmarks) => {
   return {
-    '10 items': createSuite(10),
-    '100 items': createSuite(100),
-    '250 items': createSuite(250),
-    '500 items': createSuite(500),
-    '1000 items': createSuite(1000),
-    '5000 items': createSuite(5000),
-    '10000 items': createSuite(10000),
+    '10 items': createSuite(benchmarks, 10),
+    '100 items': createSuite(benchmarks, 100),
+    '250 items': createSuite(benchmarks, 250),
+    '500 items': createSuite(benchmarks, 500),
+    '1000 items': createSuite(benchmarks, 1000),
+    '5000 items': createSuite(benchmarks, 5000),
+    '10000 items': createSuite(benchmarks, 10000),
   };
 };
 
-const suites = createSuites();
+const suites = createSuites(benchmarks);
 
 const launch = (suites) => {
   async.eachSeries(
