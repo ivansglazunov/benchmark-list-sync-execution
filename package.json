@@ -2,6 +2,9 @@
   "name": "benchmarks",
   "version": "0.0.0",
   "license": "MIT",
+  "scripts": {
+    "start": "node launch.js"
+  },
   "dependencies": {
     "async": "^2.6.0",
     "beautify-benchmark": "^0.2.4",

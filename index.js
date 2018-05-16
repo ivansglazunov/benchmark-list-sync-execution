@@ -152,4 +152,13 @@ const launch = (suites) => {
   );
 };
 
-launch(suites);
+module.exports = {
+  createArray,
+  createObject,
+  createLinkedObjects,
+  benchmarks,
+  createSuite,
+  createSuites,
+  suites,
+  launch,
+};
