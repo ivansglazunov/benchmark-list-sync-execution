@@ -1,0 +1,11 @@
+{
+  "name": "benchmarks",
+  "version": "0.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.6.0",
+    "beautify-benchmark": "^0.2.4",
+    "benchmark": "^2.1.4",
+    "lodash": "^4.17.10"
+  }
+}
