@@ -4,6 +4,10 @@ const _ = require('lodash');
 const Benchmark = require('benchmark');
 const beauty = require('beautify-benchmark');
 
+const EventEmitter = require('events');
+const EventEmitter2 = require('event-emitter');
+const EventEmitter3 = require('eventemitter3');
+
 const createArray = (count) => {
   const array = _.times(count, () => () => {});
   return array;
@@ -26,7 +30,50 @@ const createLinkedObjects = (count) => {
   return start;
 };
 
+const createEventEmitter = (count) => {
+  const eventEmitter = new EventEmitter();
+  eventEmitter.setMaxListeners(0);
+  _.times(count, () => eventEmitter.on('test', () => {}));
+  return eventEmitter;
+}
+
+const createEventEmitter2 = (count) => {
+  const eventEmitter = new EventEmitter2();
+  _.times(count, () => eventEmitter.on('test', () => {}));
+  return eventEmitter;
+}
+
+const createEventEmitter3 = (count) => {
+  const eventEmitter = new EventEmitter3();
+  _.times(count, () => eventEmitter.on('test', () => {}));
+  return eventEmitter;
+}
+
 const benchmarks = {
+  'npm events': (count) => {
+    const eventEmitter = createEventEmitter(count);
+    return {
+      fn() {
+        eventEmitter.emit('test', 123);
+      },
+    };
+  },
+  'npm event-emitter': (count) => {
+    const eventEmitter = createEventEmitter2(count);
+    return {
+      fn() {
+        eventEmitter.emit('test', 123);
+      },
+    };
+  },
+  'npm eventemitter3': (count) => {
+    const eventEmitter = createEventEmitter3(count);
+    return {
+      fn() {
+        eventEmitter.emit('test', 123);
+      },
+    };
+  },
   'for by array': (count) => {
     const array = createArray(count);
     return {
