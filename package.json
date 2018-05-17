@@ -1,6 +1,5 @@
 {
-  "name": "benchmarks",
-  "version": "0.0.0",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "start": "node launch.js"
