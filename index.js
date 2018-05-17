@@ -200,13 +200,6 @@ const launch = (suites) => {
 };
 
 module.exports = {
-  createArray,
-  createObject,
-  createLinkedObjects,
-  createEventEmitter,
-  createEventEmitter2,
-  createEventEmitter3,
-  
   benchmarks,
   createSuite,
   createSuites,
