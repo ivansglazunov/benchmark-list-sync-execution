@@ -19,39 +19,11 @@ const createObject = (count) => {
   return object;
 };
 
-const createLinkedObjects = (count) => {
-  const start = { listener: () => {}, next: null };
-  let last = start;
-  _.times(count, () => {
-    const next = { listener: () => {}, next: null };
-    last.next = next;
-    last = next;
-  });
-  return start;
-};
-
-const createEventEmitter = (count) => {
-  const eventEmitter = new EventEmitter();
-  eventEmitter.setMaxListeners(0);
-  _.times(count, () => eventEmitter.on('test', () => {}));
-  return eventEmitter;
-}
-
-const createEventEmitter2 = (count) => {
-  const eventEmitter = new EventEmitter2();
-  _.times(count, () => eventEmitter.on('test', () => {}));
-  return eventEmitter;
-}
-
-const createEventEmitter3 = (count) => {
-  const eventEmitter = new EventEmitter3();
-  _.times(count, () => eventEmitter.on('test', () => {}));
-  return eventEmitter;
-}
-
 const benchmarks = {
   'npm events': (count) => {
-    const eventEmitter = createEventEmitter(count);
+    const eventEmitter = new EventEmitter();
+    eventEmitter.setMaxListeners(0);
+    _.times(count, () => eventEmitter.on('test', () => {}));
     return {
       fn() {
         eventEmitter.emit('test', 123);
@@ -59,7 +31,8 @@ const benchmarks = {
     };
   },
   'npm event-emitter': (count) => {
-    const eventEmitter = createEventEmitter2(count);
+    const eventEmitter = new EventEmitter2();
+    _.times(count, () => eventEmitter.on('test', () => {}));
     return {
       fn() {
         eventEmitter.emit('test', 123);
@@ -67,7 +40,8 @@ const benchmarks = {
     };
   },
   'npm eventemitter3': (count) => {
-    const eventEmitter = createEventEmitter3(count);
+    const eventEmitter = new EventEmitter3();
+    _.times(count, () => eventEmitter.on('test', () => {}));
     return {
       fn() {
         eventEmitter.emit('test', 123);
@@ -151,12 +125,64 @@ const benchmarks = {
     };
   },
   'while by linked objects': (count) => {
-    const start = createLinkedObjects(count);
+    const start = { listener: () => {}, next: null };
+    let last = start;
+    _.times(count, () => {
+      const next = { listener: () => {}, next: null };
+      last.next = next;
+      last = next;
+    });
     return {
       fn() {
         let pointer = start;
         while (pointer.next) {
           pointer.listener();
+          pointer = pointer.next;
+        }
+      },
+    };
+  },
+  'while by linked objects with resolve': (count) => {
+    const start = { listener: resolve => resolve(), next: null };
+    let last = start;
+    _.times(count, () => {
+      const next = { listener: resolve => resolve(), next: null };
+      last.next = next;
+      last = next;
+    });
+    return {
+      fn() {
+        let t = 0;
+        const resolve = () => {
+          t++;
+        }
+        let pointer = start;
+        while (pointer.next) {
+          pointer.listener(resolve);
+          pointer = pointer.next;
+        }
+      },
+    };
+  },
+  'while by linked objects with defer.resolve': (count) => {
+    const start = { listener: defer => defer.resolve(), next: null };
+    let last = start;
+    _.times(count, () => {
+      const next = { listener: defer => defer.resolve(), next: null };
+      last.next = next;
+      last = next;
+    });
+    return {
+      fn() {
+        let t = 0;
+        const d = {
+          resolve: () => {
+            t++;
+          }
+        };
+        let pointer = start;
+        while (pointer.next) {
+          pointer.listener(d);
           pointer = pointer.next;
         }
       },
