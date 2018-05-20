@@ -1,6 +1,3 @@
-var {
-  suites,
-  launch,
-} = require('./index');
+var index = require('./index');
 
-launch(suites);
+index.launch(index.suites);
