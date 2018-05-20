@@ -52,7 +52,7 @@ var benchmarks = {
     var array = createArray(count);
     return {
       fn() {
-        for (let i = 0; i < array.length; i++) array[i]();
+        for (var i = 0; i < array.length; i++) array[i]();
       },
     };
   },
@@ -60,7 +60,7 @@ var benchmarks = {
     var array = createArray(count);
     return {
       fn() {
-        for (let i in array) array[i]();
+        for (var i in array) array[i]();
       },
     };
   },
@@ -68,7 +68,7 @@ var benchmarks = {
     var array = createArray(count);
     return {
       fn() {
-        for (let f of array) f();
+        for (var f of array) f();
       },
     };
   },
@@ -92,7 +92,7 @@ var benchmarks = {
     var array = createArray(count);
     return {
       fn() {
-        let i = 0;
+        var i = 0;
         while (i < array.length) {
           array[i]();
           i++;
@@ -104,7 +104,7 @@ var benchmarks = {
     var object = createObject(count);
     return {
       fn() {
-        for (let i = 0; i < count; i++) object[i]();
+        for (var i = 0; i < count; i++) object[i]();
       },
     };
   },
@@ -112,7 +112,7 @@ var benchmarks = {
     var object = createObject(count);
     return {
       fn() {
-        for (let i in object) object[i]();
+        for (var i in object) object[i]();
       },
     };
   },
@@ -126,7 +126,7 @@ var benchmarks = {
   },
   'while by linked objects': function (count) {
     var start = { listener: function() {}, next: null };
-    let last = start;
+    var last = start;
     _.times(count, function() {
       var next = { listener: function() {}, next: null };
       last.next = next;
@@ -134,7 +134,7 @@ var benchmarks = {
     });
     return {
       fn() {
-        let pointer = start;
+        var pointer = start;
         while (pointer) {
           pointer.listener();
           pointer = pointer.next;
@@ -144,7 +144,7 @@ var benchmarks = {
   },
   'while by linked objects with resolve': function (count) {
     var start = { listener: function(resolve) { resolve(); }, next: null };
-    let last = start;
+    var last = start;
     _.times(count, function() {
       var next = { listener: function(resolve) { resolve(); }, next: null };
       last.next = next;
@@ -152,11 +152,11 @@ var benchmarks = {
     });
     return {
       fn() {
-        let t = 0;
+        var t = 0;
         var resolve = function() {
           t++;
         }
-        let pointer = start;
+        var pointer = start;
         while (pointer.next) {
           pointer.listener(resolve);
           pointer = pointer.next;
@@ -166,7 +166,7 @@ var benchmarks = {
   },
   'while by linked objects with defer.resolve': function (count) {
     var start = { listener: function (defer) { defer.resolve(); }, next: null };
-    let last = start;
+    var last = start;
     _.times(count, function() {
       var next = { listener: function (defer) { defer.resolve(); }, next: null };
       last.next = next;
@@ -174,13 +174,13 @@ var benchmarks = {
     });
     return {
       fn() {
-        let t = 0;
+        var t = 0;
         var d = {
           resolve: function() {
             t++;
           }
         };
-        let pointer = start;
+        var pointer = start;
         while (pointer.next) {
           pointer.listener(d);
           pointer = pointer.next;
@@ -192,7 +192,7 @@ var benchmarks = {
 
 var createSuite = function (benchmarks, count) {
   var suite = new Benchmark.Suite();
-  for (let t in benchmarks) suite.add(t, benchmarks[t](count));
+  for (var t in benchmarks) suite.add(t, benchmarks[t](count));
   return suite;
 };
 
@@ -216,7 +216,7 @@ var launch = function (suites) {
     function (suiteName, next) {
       console.log(suiteName);
       suites[suiteName].on('cycle', function (event) { beauty.add(event.target); });
-      suites[suiteName].on('complete', function (event) {
+      suites[suiteName].on('compvare', function (event) {
         beauty.log();
         next();
       });
