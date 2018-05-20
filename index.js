@@ -216,7 +216,7 @@ var launch = function (suites) {
     function (suiteName, next) {
       console.log(suiteName);
       suites[suiteName].on('cycle', function (event) { beauty.add(event.target); });
-      suites[suiteName].on('compvare', function (event) {
+      suites[suiteName].on('complete', function (event) {
         beauty.log();
         next();
       });
