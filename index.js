@@ -1,27 +1,27 @@
-const fs = require('fs');
-const async = require('async');
-const _ = require('lodash');
-const Benchmark = require('benchmark');
-const beauty = require('beautify-benchmark');
+var fs = require('fs');
+var async = require('async');
+var _ = require('lodash');
+var Benchmark = require('benchmark');
+var beauty = require('beautify-benchmark');
 
-const EventEmitter = require('events');
-const EventEmitter2 = require('event-emitter');
-const EventEmitter3 = require('eventemitter3');
+var EventEmitter = require('events');
+var EventEmitter2 = require('event-emitter');
+var EventEmitter3 = require('eventemitter3');
 
-const createArray = function (count) {
-  const array = _.times(count, function() { return function() {}; });
+var createArray = function (count) {
+  var array = _.times(count, function() { return function() {}; });
   return array;
 };
 
-const createObject = function (count) {
-  const object = {};
+var createObject = function (count) {
+  var object = {};
   _.times(count, function(t) { object[t] = function() {}; });
   return object;
 };
 
-const benchmarks = {
+var benchmarks = {
   'npm events': function (count) {
-    const eventEmitter = new EventEmitter();
+    var eventEmitter = new EventEmitter();
     eventEmitter.setMaxListeners(0);
     _.times(count, function() { eventEmitter.on('test', function() {}); });
     return {
@@ -31,7 +31,7 @@ const benchmarks = {
     };
   },
   'npm event-emitter': function (count) {
-    const eventEmitter = new EventEmitter2();
+    var eventEmitter = new EventEmitter2();
     _.times(count, function() { eventEmitter.on('test', function() {}); });
     return {
       fn() {
@@ -40,7 +40,7 @@ const benchmarks = {
     };
   },
   'npm eventemitter3': function (count) {
-    const eventEmitter = new EventEmitter3();
+    var eventEmitter = new EventEmitter3();
     _.times(count, function() { eventEmitter.on('test', function() {}) });
     return {
       fn() {
@@ -49,7 +49,7 @@ const benchmarks = {
     };
   },
   'for by array': function (count) {
-    const array = createArray(count);
+    var array = createArray(count);
     return {
       fn() {
         for (let i = 0; i < array.length; i++) array[i]();
@@ -57,7 +57,7 @@ const benchmarks = {
     };
   },
   'for-in by array': function (count) {
-    const array = createArray(count);
+    var array = createArray(count);
     return {
       fn() {
         for (let i in array) array[i]();
@@ -65,7 +65,7 @@ const benchmarks = {
     };
   },
   'for-of by array': function (count) {
-    const array = createArray(count);
+    var array = createArray(count);
     return {
       fn() {
         for (let f of array) f();
@@ -73,7 +73,7 @@ const benchmarks = {
     };
   },
   'forEach by array': function (count) {
-    const array = createArray(count);
+    var array = createArray(count);
     return {
       fn() {
         array.forEach(function(f) { f(); });
@@ -81,7 +81,7 @@ const benchmarks = {
     };
   },
   '_.forEach by array (npm: lodash)': function (count) {
-    const array = createArray(count);
+    var array = createArray(count);
     return {
       fn() {
         _.forEach(array, function(f) { f(); });
@@ -89,7 +89,7 @@ const benchmarks = {
     };
   },
   'while by array': function (count) {
-    const array = createArray(count);
+    var array = createArray(count);
     return {
       fn() {
         let i = 0;
@@ -101,7 +101,7 @@ const benchmarks = {
     };
   },
   'for by object': function (count) {
-    const object = createObject(count);
+    var object = createObject(count);
     return {
       fn() {
         for (let i = 0; i < count; i++) object[i]();
@@ -109,7 +109,7 @@ const benchmarks = {
     };
   },
   'for-in by object': function (count) {
-    const object = createObject(count);
+    var object = createObject(count);
     return {
       fn() {
         for (let i in object) object[i]();
@@ -117,7 +117,7 @@ const benchmarks = {
     };
   },
   '_.forEach by object (npm: lodash)': function (count) {
-    const object = createObject(count);
+    var object = createObject(count);
     return {
       fn() {
         _.forEach(object, function(f) { f(); });
@@ -125,10 +125,10 @@ const benchmarks = {
     };
   },
   'while by linked objects': function (count) {
-    const start = { listener: function() {}, next: null };
+    var start = { listener: function() {}, next: null };
     let last = start;
     _.times(count, function() {
-      const next = { listener: function() {}, next: null };
+      var next = { listener: function() {}, next: null };
       last.next = next;
       last = next;
     });
@@ -143,17 +143,17 @@ const benchmarks = {
     };
   },
   'while by linked objects with resolve': function (count) {
-    const start = { listener: function(resolve) { resolve(); }, next: null };
+    var start = { listener: function(resolve) { resolve(); }, next: null };
     let last = start;
     _.times(count, function() {
-      const next = { listener: function(resolve) { resolve(); }, next: null };
+      var next = { listener: function(resolve) { resolve(); }, next: null };
       last.next = next;
       last = next;
     });
     return {
       fn() {
         let t = 0;
-        const resolve = function() {
+        var resolve = function() {
           t++;
         }
         let pointer = start;
@@ -165,17 +165,17 @@ const benchmarks = {
     };
   },
   'while by linked objects with defer.resolve': function (count) {
-    const start = { listener: function (defer) { defer.resolve(); }, next: null };
+    var start = { listener: function (defer) { defer.resolve(); }, next: null };
     let last = start;
     _.times(count, function() {
-      const next = { listener: function (defer) { defer.resolve(); }, next: null };
+      var next = { listener: function (defer) { defer.resolve(); }, next: null };
       last.next = next;
       last = next;
     });
     return {
       fn() {
         let t = 0;
-        const d = {
+        var d = {
           resolve: function() {
             t++;
           }
@@ -190,13 +190,13 @@ const benchmarks = {
   },
 };
 
-const createSuite = function (benchmarks, count) {
-  const suite = new Benchmark.Suite();
+var createSuite = function (benchmarks, count) {
+  var suite = new Benchmark.Suite();
   for (let t in benchmarks) suite.add(t, benchmarks[t](count));
   return suite;
 };
 
-const createSuites = function (benchmarks) {
+var createSuites = function (benchmarks) {
   return {
     '10 items': createSuite(benchmarks, 10),
     '100 items': createSuite(benchmarks, 100),
@@ -208,9 +208,9 @@ const createSuites = function (benchmarks) {
   };
 };
 
-const suites = createSuites(benchmarks);
+var suites = createSuites(benchmarks);
 
-const launch = function (suites) {
+var launch = function (suites) {
   async.eachSeries(
     _.keys(suites),
     function (suiteName, next) {

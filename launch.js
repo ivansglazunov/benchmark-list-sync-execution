@@ -1,4 +1,4 @@
-const {
+var {
   suites,
   launch,
 } = require('./index');
