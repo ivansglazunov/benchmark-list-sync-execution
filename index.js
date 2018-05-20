@@ -221,7 +221,7 @@ const launch = function (suites) {
         next();
       });
       suites[suiteName].run({ async: true });
-    },
+    }
   );
 };
 
